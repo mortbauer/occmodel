@@ -71,7 +71,7 @@ OCCTesselation *OCCEdge::tesselate(double angular, double curvature)
         
         for (Standard_Integer i = 1; i <= TD.NbPoints(); i++)
         {
-            gp_Pnt pnt = TD.Value(i).Transformed(location);
+            gp_Pnt pnt = TD.Value(i);
             vert.x = (float)pnt.X();
             vert.y = (float)pnt.Y();
             vert.z = (float)pnt.Z();

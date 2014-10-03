@@ -6,7 +6,7 @@ cdef extern from "<string>" namespace "std":
         string() nogil except +
         string(char *) nogil except +
         char* c_str() nogil
-        
+
 cdef extern from "<vector>" namespace "std":
     cdef cppclass vector[T]:
        vector()
@@ -17,27 +17,27 @@ cdef extern from "<vector>" namespace "std":
 
 cdef extern from "OCCModel.h":
     char errorMessage[256]
-    
+
     cdef struct c_OCCStruct3d "OCCStruct3d":
         double x
         double y
         double z
-    
+
     cdef struct c_OCCStruct3f "OCCStruct3f":
         float x
         float y
         float z
-        
+
     cdef struct c_OCCStruct3I "OCCStruct3I":
         unsigned int i
         unsigned int j
         unsigned int k
-    
+
     cdef cppclass c_OCCTesselation "OCCTesselation":
         vector[c_OCCStruct3f] vertices
         vector[int] ranges
         c_OCCTesselation()
-        
+
     cdef cppclass c_OCCMesh "OCCMesh":
         vector[c_OCCStruct3f] vertices
         vector[c_OCCStruct3f] normals
@@ -45,15 +45,15 @@ cdef extern from "OCCModel.h":
         vector[unsigned int] edgeindices
         vector[int] edgeranges
         vector[int] edgehash
-        
+
         c_OCCMesh()
         void optimize()
-    
+
     cdef enum c_BoolOpType "BoolOpType":
         BOOL_FUSE
         BOOL_CUT
         BOOL_COMMON
-    
+
     cdef enum c_TopAbs_ShapeEnum "TopAbs_ShapeEnum":
         TopAbs_COMPOUND
         TopAbs_COMPSOLID
@@ -63,7 +63,7 @@ cdef extern from "OCCModel.h":
         TopAbs_WIRE
         TopAbs_EDGE
         TopAbs_VERTEX
-        
+
     cdef cppclass c_OCCBase "OCCBase":
         c_TopAbs_ShapeEnum shapeType()
         int hashCode()
@@ -79,19 +79,19 @@ cdef extern from "OCCModel.h":
         int findPlane(c_OCCStruct3d *origin, c_OCCStruct3d *normal, double tolerance)
         int toString(string *output)
         int fromString(string input)
-        
+
     cdef cppclass c_OCCVertex "OCCVertex":
         c_OCCVertex(double x, double y, double z)
         double X()
         double Y()
         double Z()
         int project(c_OCCBase *target)
-    
+
     cdef cppclass c_OCCVertexIterator "OCCVertexIterator":
         c_OCCVertexIterator(c_OCCBase *arg)
         void reset()
         c_OCCVertex *next()
-        
+
     cdef cppclass c_OCCEdge "OCCEdge":
         c_OCCEdge()
         bint isSeam(c_OCCBase *face)
@@ -117,12 +117,12 @@ cdef extern from "OCCModel.h":
         int createNURBS(c_OCCVertex *start, c_OCCVertex *end, vector[c_OCCStruct3d] points,
                         vector[double] knots, vector[double] weights, vector[int] mult)
         double length()
-    
+
     cdef cppclass c_OCCEdgeIterator "OCCEdgeIterator":
         c_OCCEdgeIterator(c_OCCBase *arg)
         void reset()
         c_OCCEdge *next()
-        
+
     cdef cppclass c_OCCWire "OCCWire":
         c_OCCWire()
         c_OCCWire *copy(bint deepCopy)
@@ -136,12 +136,12 @@ cdef extern from "OCCModel.h":
         int fillet(vector[c_OCCVertex *] vertices, vector[double] radius)
         int chamfer(vector[c_OCCVertex *] vertices, vector[double] distances)
         double length()
-    
+
     cdef cppclass c_OCCWireIterator "OCCWireIterator":
         c_OCCWireIterator(c_OCCBase *arg)
         void reset()
         c_OCCWire *next()
-        
+
     cdef cppclass c_OCCFace "OCCFace":
         c_OCCFace()
         c_OCCFace *copy(bint deepCopy)
@@ -160,12 +160,12 @@ cdef extern from "OCCModel.h":
         int loft(vector[c_OCCBase *] profiles, bint ruled, double tolerance)
         int boolean(c_OCCSolid *tool, c_BoolOpType op)
         c_OCCMesh *createMesh(double factor, double angle, bint qualityNormals)
-    
+
     cdef cppclass c_OCCFaceIterator "OCCFaceIterator":
         c_OCCFaceIterator(c_OCCBase *arg)
         void reset()
         c_OCCFace *next()
-        
+
     cdef cppclass c_OCCSolid "OCCSolid":
         c_OCCSolid()
         c_OCCSolid *copy(bint deepCopy)
@@ -195,8 +195,9 @@ cdef extern from "OCCModel.h":
         int chamfer(vector[c_OCCEdge *] edges, vector[double] distances)
         int shell(vector[c_OCCFace *] faces, double offset, double tolerance)
         int offset(c_OCCFace *face, double offset, double tolerance)
-        c_OCCFace *section(c_OCCStruct3d pnt, c_OCCStruct3d nor)        
-    
+        c_OCCFace *section(c_OCCStruct3d pnt, c_OCCStruct3d nor)
+        int sectionedges(c_OCCStruct3d pnt, c_OCCStruct3d nor,vector[c_OCCEdge *])
+
     cdef cppclass c_OCCSolidIterator "OCCSolidIterator":
         c_OCCSolidIterator(c_OCCBase *arg)
         void reset()

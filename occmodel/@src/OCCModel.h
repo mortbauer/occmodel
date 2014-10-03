@@ -364,6 +364,7 @@ class OCCSolid : public OCCBase {
         int shell(std::vector<OCCFace *> faces, double offset, double tolerance);
         int offset(OCCFace *face, double offset, double tolerance);
         OCCFace *section(OCCStruct3d pnt, OCCStruct3d nor);
+        int sectionedges(OCCStruct3d pnt, OCCStruct3d nor,std::vector<OCCEdge *>& edges);
         bool canSetShape(const TopoDS_Shape& shape) {
             TopAbs_ShapeEnum type = shape.ShapeType();
             return type == TopAbs_SOLID || type == TopAbs_COMPSOLID || type == TopAbs_COMPOUND;

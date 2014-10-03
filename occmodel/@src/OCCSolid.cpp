@@ -1057,6 +1057,36 @@ int OCCSolid::offset(OCCFace *face, double offset, double tolerance = 1e-6) {
     return 1;
 }
 
+int OCCSolid::sectionedges(OCCStruct3d pnt, OCCStruct3d nor,std::vector<OCCEdge *>& edges)
+{
+    TopExp_Explorer ex;
+    try {
+        gp_Pln pln(gp_Pnt(pnt.x,pnt.y,pnt.z), gp_Dir(nor.x,nor.y,nor.z));
+        
+        BRepAlgoAPI_Section mkSection(getShape(), pln);
+        if (!mkSection.IsDone())
+            StdFail_NotDone::Raise("Section operation failed");
+    
+        for (ex.Init(mkSection.Shape(), TopAbs_EDGE); ex.More(); ex.Next()) {
+            if (!ex.Current().IsNull()) {
+                OCCEdge * edge = new OCCEdge();
+                edge->setShape(TopoDS::Edge(ex.Current()));
+                edges.push_back(edge);
+            }
+        }
+        
+    } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create section");
+        }
+        return 0;
+    }
+    return 1;
+}
 // FIXME!: Return vector of faces
 // See FreeCad/CrossSection.cpp
 //

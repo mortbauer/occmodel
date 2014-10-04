@@ -160,6 +160,7 @@ cdef extern from "OCCModel.h":
         int loft(vector[c_OCCBase *] profiles, bint ruled, double tolerance)
         int boolean(c_OCCSolid *tool, c_BoolOpType op)
         c_OCCMesh *createMesh(double factor, double angle, bint qualityNormals)
+        int sectionedges(c_OCCStruct3d pnt, c_OCCStruct3d nor,vector[c_OCCEdge *])
 
     cdef cppclass c_OCCFaceIterator "OCCFaceIterator":
         c_OCCFaceIterator(c_OCCBase *arg)

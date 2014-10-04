@@ -126,7 +126,41 @@ cdef class Face(Base):
             raise OCCError(errorMessage)
         
         return self
+
+    cpdef sectionedges(self, Plane plane):
+        '''
+        Apply section operation between solid and plane.
         
+        :param plane: section plane
+        
+        Result returned as a face.
+        '''
+        cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
+        cdef c_OCCStruct3d cpnt, cnor
+        cdef vector[c_OCCEdge *] c_edges
+        cdef Edge edge
+        cdef list edges = []
+        
+        cpnt.x = plane.origin.x
+        cpnt.y = plane.origin.y
+        cpnt.z = plane.origin.z
+        
+        cnor.x = plane.zaxis.x
+        cnor.y = plane.zaxis.y
+        cnor.z = plane.zaxis.z
+       
+        cdef int ret = occ.sectionedges(cpnt, cnor, c_edges)
+        if ret != 1:
+            raise OCCError(errorMessage)
+            
+        for i in range(c_edges.size()):
+            edge = Edge.__new__(Edge,None)
+            edge.thisptr = c_edges[i]
+            edges.append(edge)
+        
+        return edges
+
+
     cpdef createConstrained(self, edges, points = None):
         '''
         Create general face constrained by edges

@@ -1,4 +1,5 @@
 # build folders
+build
 occmodel/build/
 occmodel/@docs/build/
 # compiled python files

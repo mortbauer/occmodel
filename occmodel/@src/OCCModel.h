@@ -302,6 +302,7 @@ class OCCFace : public OCCBase {
         int loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance);
         int boolean(OCCSolid *tool, BoolOpType op);
         int sectionedges(OCCStruct3d pnt, OCCStruct3d nor,std::vector<OCCEdge *>& edges);
+        int project_array_of_coords(double *coords,double *ncoords,int *indices,int n);
         OCCMesh *createMesh(double defle, double angle, bool qualityNormals);
         bool canSetShape(const TopoDS_Shape& shape) {
             return shape.ShapeType() == TopAbs_FACE || shape.ShapeType() == TopAbs_SHELL;

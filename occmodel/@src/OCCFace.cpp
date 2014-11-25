@@ -2,6 +2,41 @@
 // See LICENSE.txt for details on conditions.
 #include "OCCModel.h"
 
+int OCCFace::project_array_of_coords(double *coords,double *ncoords,int *indices,int n)
+{
+    int ret = 0;
+    gp_Pnt pnt;
+    Handle_Geom_Surface surf = BRep_Tool::Surface(this->getFace());
+    try {
+        for(int i = 0; i != n; i++) {
+            for(int j = 0; j<3; j++)
+            {
+                pnt.SetCoord(j+1,coords[indices[i]*3+j]);
+            }
+            GeomAPI_ProjectPointOnSurf SrfProp(pnt,surf,Extrema_ExtAlgo_Tree);
+            gp_Pnt pnt_sol = SrfProp.Point(1);
+            for(int j = 0; j<3; j++)
+            {
+                ncoords[indices[i]*3+j] = pnt_sol.Coord(j+1);
+            }
+
+        }
+       //ret->setShape(pnt_on);
+    } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to project points");
+        }
+        return 1;
+    }
+    return ret;
+
+}
+
+
 OCCFace *OCCFace::copy(bool deepCopy = false)
 {
     OCCFace *ret = new OCCFace();
